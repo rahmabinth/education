@@ -1,26 +1,27 @@
 #### Preamble ####
-# Purpose: Downloads and saves the data from [...UPDATE THIS...]
-# Author: Rohan Alexander [...UPDATE THIS...]
-# Date: 11 February 2023 [...UPDATE THIS...]
-# Contact: rohan.alexander@utoronto.ca [...UPDATE THIS...]
+# Purpose: Downloads and saves the data from the replication package provided 
+# by the authors
+# Author: Rahma Binth Mohammad
+# Date: 
+# Contact: rahma.binthmohammad@mail.utoronto.ca
 # License: MIT
 # Pre-requisites: [...UPDATE THIS...]
 # Any other information needed? [...UPDATE THIS...]
 
 
 #### Workspace setup ####
-library(opendatatoronto)
-library(tidyverse)
-# [...UPDATE THIS...]
+library(haven)
 
 #### Download data ####
-# [...ADD CODE HERE TO DOWNLOAD...]
-
-
+figure1_data <- read_dta("data/raw_data/Figure_1_data.dta")
+dropout_age <- read_dta("data/raw_data/dropout_age_1980_2010.dta")
+maps_d <- read_dta("data/raw_data/maps_d.dta")
+Figures_5_6_data <- read_dta("data/raw_data/Figures_5_6_data.dta")
 
 #### Save data ####
-# [...UPDATE THIS...]
-# change the_raw_data to whatever name you assigned when you downloaded it.
-write_csv(the_raw_data, "inputs/data/raw_data.csv") 
+write_csv(figure1_data, "data/raw_data/figure_1_data.csv") 
+write_csv(dropout_age, "data/raw_data/dropout_age.csv") 
+write_csv(maps_d, "data/raw_data/maps_d.csv") 
+write_csv(Figures_5_6_data, "data/raw_data/Figures_5_6_data.csv") 
 
-         
+
