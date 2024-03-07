@@ -20,4 +20,4 @@ maps_d_clean <- maps_d |> rename(bpl = STATEFP)
 maps_d_clean$bpl <- as.numeric(maps_d_clean$bpl)
 
 #### Save data ####
-write_csv(maps_d_clean, "data/analysis_data/analysis_data.csv")
+write_csv(maps_d_clean, "data/analysis_data/maps_d_clean.csv")
