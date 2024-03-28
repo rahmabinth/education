@@ -1,11 +1,10 @@
 #### Preamble ####
-# Purpose: Replicated graphs from "Why Does Education Reduce Crime?" 
-# (Bell et al. 2022)
+# Purpose: Replicated graphs from "Why Does Education Reduce Crime?" (Bell et al. 2022)
 # Author: Rahma Binth Mohammad
-# Date: 13 February 2024
+# Date: 16 February 2024
 # Contact: rahma.binthmohammad@mail.utoronto.ca
 # License: MIT
-# Pre-requisites: Run the "01-download_data.R" and the "02-data_cleaning.R" file. 
+# Pre-requisites: Run the "00-install_packages.R", 01-download_data.R", and the "02-data_cleaning.R" file. 
 
 #### Workspace setup ####
 library(tidyverse)
@@ -69,7 +68,6 @@ dropout_age_2010 <- filter(dropout_age, year == 2010)
 # Join the datasets mapd_d_sf and dropout_age_1980, as well as dropout_age_2010
 maps_d_sf_1980 <- left_join(maps_d_sf, dropout_age_1980, by = c("bpl"))
 maps_d_sf_2010 <- left_join(maps_d_sf, dropout_age_2010, by = c("bpl"))
-
 
 #Convert the coloumn values to contain all lowercase values to match with 
 # a us_states column
@@ -135,7 +133,7 @@ data_map_2010
 #### Figure 6 Replication ####
 
 #### Load data ####
-crime_data2 <- read_csv("data/raw_data/reproduction_data/Figures_5_6_data.csv") 
+crime_data2 <- read_csv("data/raw_data/reproduction_data/figure3_data.csv") 
 
 # Calculate arrest rates
 crime_data2$arrest_rate_base <- exp(crime_data2$base_age)
