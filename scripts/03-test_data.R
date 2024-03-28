@@ -7,7 +7,6 @@
 # Pre-requisites: Run "00-install_packages.R", "01-download_data.R", and "02-data_cleaning.R"
 # Any other information needed? This file is just to test the column classes. 
 
-
 #### Workspace setup ####
 library(tidyverse)
 library(haven)
