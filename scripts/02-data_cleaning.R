@@ -1,16 +1,15 @@
 #### Preamble ####
-# Purpose: Cleans the raw plane data recorded by two observers..... [...UPDATE THIS...]
+# Purpose: Cleans the raw data recorded by the authors of "Why Does Education Reduce Crime"
 # Author: Rahma Binth Mohammad
-# Date: 
+# Date: 16 February 2024
 # Contact: rahma.binthmohammad@mail.utoronto.ca
 # License: MIT
-# Pre-requisites: [...UPDATE THIS...]
-# Any other information needed? [...UPDATE THIS...]
+# Pre-requisites: Run "00-install_packages.R" and "01-download_data.R"
 
 #### Workspace setup ####
 library(tidyverse)
 
-#### Clean data ####
+# Clean data #
 maps_d <- read_csv("data/raw_data/reproduction_data/maps_d.csv") 
 
 # Rename column for maps_d
