@@ -56,7 +56,7 @@ Data for this analysis and the different applications used, will be introduced i
 # Data {#sec-data}
 
 ## Sources
-This paper replicates and explores various aspects of the original study for this analysis. It is reproduced using several data sets from the replication package provided with the paper “Why Does Education Reduce Crime?” [@education]. The replication package only holds the cleaned data in multiple files, depending on how they appear on the paper. Figures 1, 2, and 3 are replicated from the original paper for this reproduction. Our reproduction aims to address the following two questions: (1) Do CSL reforms deter individuals from criminal activity, and thus decreasing crime rate in youth? (2) Does this reduction reshape criminal behaviour distributions by age?
+This paper replicates and explores various aspects of the original study for this analysis. It is reproduced using several data sets from the replication package provided with the paper “Why Does Education Reduce Crime?” [@education]. The replication package only holds the cleaned data in multiple files, depending on how they appear on the paper. The figures in this paper are replicated and reproduced from the original paper. Our reproduction aims to address the following two questions: (1) Do CSL reforms deter individuals from criminal activity, and thus decreasing crime rate in youth? (2) Does this reduction reshape criminal behaviour distributions by age?
 
 @education do not analyse a single dataset. Instead, we have many different sources provided to us. The ones used to reproduce and compile this paper are as follows:
 
@@ -92,7 +92,7 @@ The borders for each states according to the longitude and latitude of its locat
 In general, these data sets provide us with a way to graph the arrest rates against the age for various crime type, compare the change in dropout ages as time passes, and see arrest rates prior and post to the reforms. We have omitted an in-depth examination of the discontinuity estimates for conciseness.
 
 ## Methodology
-The language and environment used for this analysis is `R` [@citeR], alongside the `tidyverse` [@tidyverse], `dplyr` [@dplyr], `haven` [@haven], `ggplot2` [@ggplot2], and `sf` [@sf] packages. 
+The language and environment used for this analysis is `R` [@citeR], alongside the `tidyverse` [@tidyverse], `dplyr` [@dplyr], `haven` [@haven], `ggplot2` [@ggplot2], `sf` [@sf], `gridExtra` [@gridExtra], and `patchwork` [@patchwork] packages. 
 
 We downloaded, cleaned, and wrote csv files to make it R friendly. We have classified it into three categories, arrest data, reform data, and United States shapefiles. There are many more datasets in the package, but we chose to only focus on these three. An explanation of these choices will be given in @sec-results.
 
@@ -322,8 +322,29 @@ figure3 <- total_fig + violent_fig +
 print(figure3)
 ```
 
+@fig-rates displays the comparative analysis of the arrest rate per crime type before and after the reforms were implemented. This is demonstrated using the mean of the arrest rate prior to a discontinuity in the arrests after a reform, with discontinuity estimates calculated by the researchers of the original paper [@education]. These estimates quantify the change in rates before and after the reform, focusing on a transition between ages 15 to 24. We used the same discontinuity estimates to reproduce @fig-rates. 
+
+Prior to the reforms, the line representing the mean arrest rate per crime type consistently rests at a higher level on the graph, indicating a relatively higher frequency of arrest. These observed patterns indicate a significant shift after the reforms were enforced. After implemented, the line resides at a relatively lower level on the graph. This shift indicates the frequency of arrests has decreased. The change is of particular interest, due to the fact that it signifies the consequential impact of policy. The results in this section illustrate a strong negative effect on arrest rates from CSL reforms. This concludes that there is a direct impact. 
 
 # Discussion {#sec-discussion}
+
+## Importance of crime prevention through educational interventions {#sec-discussion1}
+
+In @fig-arrests, we saw drug-related crimes committed by those in high school were higher than the other types. Youth are particularly vulnerable to drug-related crime and thus, preventive measures must be taken early in the individuals life [@un_office]. This vulnerability could be due to the peer influence, social pressure, economic incentives, or numerous other reasons. The United Nations Office on Drugs and Crimes holds strong that it’s their job is to strengthen youth’s resilience to crime, reducing this vulnerability, through eduction and building skills [@un_office]. From @fig-arrests and @fig-dropout, we can see the states that were active in their policy making, in regards to education. Clearly, education plays an important role and we saw this in @fig-dropout and @fig-rates. The statistical inference drawn from the data implies that extending the mandatory education period in youth, contributes to a reduction in criminal behaviour among them. 
+
+Mandating education, until a later age in life allows individuals to have additional opportunities for personal development and career advancement. This potentially deters them from criminal opportunities as it avoids the risk factor in committing crimes. The pattern of decreased arrest rates across numerous crime types further strengthens our finding. Our findings highlight the role of education and allow us to look for benefits of educational interventions. This can help with further policy development, as discussed below in @sec-discussion2.
+
+## Policy Implications {#sec-discussion2}
+
+We have outlined the benefit of educational interventions in @sec-discussion1. The increase in mandatory dropout age by the state, reveals an effort to encourage greater educational achievements for individuals and keep them out of trouble. We can go one step further and consider education initiatives that must be taken. States could prioritise investing in early childhood education. Giving children high-quality education provides them with even better opportunity and builds their confidence and skills to attain bigger goals. Development of their cognitive abilities, and building resilience in children can also decrease the effect of peer pressure, which we had outlined earlier can be related to the vulnerability of youth. If states want to keep youth in school, they must also use their time to promote safe and positive environment. This can reduce the effects of bullying and violence, and ensure youth stay in school.  
+
+## Ethical Implications and Bias
+Policymakers at the state level need to consider ethical implications and biases in their policies and reforms. If they don’t, they run the risk of making the problem they’re addressing worse than before. When states increase the mandatory dropout age, they must promote equity and access. This means educational opportunities and high-quality education to all, regardless of demographic characteristics like gender, race, age, social or economic status. States and policymakers also need to consider culture bias. This type of bias can exist when policymakers are not aware of their constituents' backgrounds, beliefs, and values. To address this bias, they should engage with those of diverse backgrounds in the community, and listen to their educational needs for their children. 
+
+## Weaknesses and Future Research {#sec-discussion4}
+In terms of the weaknesses in the analysis of CSLs, they vary by state. They have different exemptions in each state, making it difficult to measure the dropout age. While our estimation is based on widely held opinions on the age, it is important to note the difficult of measuring the age. Another weakness in this analysis comes from the crime rates taken from the FBI’s Uniform Crime Data platform consisted of male arrests, only. While this was due to a lack of law enforcement agencies consistently reporting their arrests, it is still an issue when looking at the broader issue, as we are looking at youth as a whole. There are also disparities in income level and educational attainment in some states, as compared to other ones in the US. However, we could only look at arrest data in certain states, without considering the income level and educational opportunities in the specific states, to establish conciseness. For our next steps, future research should focus on youth from different socio-economic backgrounds and regions. 
+
+In summary, the observed decline in arrest rates following the implementation of educational reforms suggests a highly plausible relationship between extended mandatory education and reduced criminal behaviour among youth. These findings underscore the importance of policy interventions aimed at enhancing educational opportunities as a means of fostering positive social outcomes and mitigating crime rates among young individuals. Further research exploring the causal mechanisms underlying this relationship and assessing the long-term impacts of educational reforms on crime prevention is warranted.
 
 \newpage
 
