@@ -13,6 +13,7 @@ library(ggplot2)
 library(dplyr)
 library(sf)
 library(gridExtra)
+library(patchwork)
 
 #### Figure 1 Replication ####
 
@@ -32,20 +33,20 @@ crime_data <- crime_data %>%
 #Plots age against cumulative arrests
 ggplot(crime_data, aes(x = as.factor(agegroup), y = cumulative_arrest, 
                        fill = factor(crime_type))) +
-  geom_bar(stat = "identity", position = "stack", width = 0.8) + #bar graph
-  scale_fill_manual(values = c("black", "lightblue", "darkred"), #colours
-                    labels = c("Drugs", "Property", "Violent")) + #legend
+  geom_bar(stat = "identity", position = "stack", width = 0.8) + 
+  scale_fill_manual(values = c("black", "lightblue", "darkred"), 
+                    labels = c("Drugs", "Property", "Violent")) + 
   labs(x = "Age", y = "Arrest Rate (Per 1000 Population)", fill = NULL, 
-       title = "Cumalitive Arrests By Age and Crime Type") + #titles
+       title = "Cumalitive Arrests By Age and Crime Type") +
   scale_x_discrete(labels = c("15", "16", "17", "18", "19", "20", "21", "22", 
-                              "23", "24", "25-29", "30-34", "35-39")) + #labels
-  scale_y_continuous(breaks = seq(0, 100, by = 20)) + # y-axis breaks
+                              "23", "24", "25-29", "30-34", "35-39")) + 
+  scale_y_continuous(breaks = seq(0, 100, by = 20)) + 
   theme_minimal() +
-  theme(legend.position = "bottom", #legend position
-        axis.text.x = element_text(angle = 0, hjust = 0.5), #Centers axis
-        plot.title = element_text(hjust = 0.5), #Centers title
-        panel.grid.major = element_blank(),  #Removes major grid lines
-        panel.grid.minor = element_blank())  #Removes minor grid lines
+  theme(legend.position = "bottom",
+        axis.text.x = element_text(angle = 0, hjust = 0.5),
+        plot.title = element_text(hjust = 0.5),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank())
 
 #### Figure 2 Replication ####
 
@@ -136,47 +137,68 @@ crime_data2$arrest_rate_new <- exp(crime_data2$base_age + crime_data2$b_age)
 # Plotting
 # Total
 total_fig <- ggplot(crime_data2[crime_data2$crime == 4, ], aes(x = age)) +
-  geom_line(aes(y = arrest_rate_base), stat = "identity", color = "aquamarine2", alpha = 1) +
-  geom_line(aes(y = arrest_rate_new), stat = "identity", color = "chartreuse4", alpha = 1) +
+  geom_line(aes(y = arrest_rate_base, color = "prior"), stat = "identity", alpha = 1) +
+  geom_line(aes(y = arrest_rate_new, color = "post",), stat = "identity", alpha = 1) +
   labs(x = "Age", y = "Estimated Arrest Rates", title = "Total") +
   scale_x_continuous(breaks = seq(15, 24, by = 1)) +
-  scale_y_continuous(limits = c(0.04, 0.12), breaks = seq(0.04, 0.12, by = 0.02)) +
-  theme_bw()
+  scale_y_continuous(limits = c(0.04, 0.12), breaks = seq(0.04, 0.12, by = 0.01)) +
+  scale_color_manual(name = NULL,
+                    values = c("prior" = "aquamarine2", "post" = "chartreuse4"), 
+                    labels = c("post", "prior")) + 
+  theme_minimal() +
+  theme(legend.position = "bottom",
+        plot.title = element_text(hjust = 0.5),
+        panel.grid.major = element_blank())
 
 # Violent
 violent_fig <- ggplot(crime_data2[crime_data2$crime == 1, ], aes(x = age)) +
-  geom_line(aes(y = arrest_rate_base), stat = "identity", color = "hotpink", alpha = 1) +
-  geom_line(aes(y = arrest_rate_new), stat = "identity", color = "darkred", alpha = 1) +
+  geom_line(aes(y = arrest_rate_base, color = "prior"), stat = "identity", alpha = 1) +
+  geom_line(aes(y = arrest_rate_new, color = "post",), stat = "identity", alpha = 1) +
   labs(x = "Age", y = "Estimated Arrest Rates", title = "Violent") +
   scale_x_continuous(breaks = seq(15, 24, by = 1)) +
-  scale_y_continuous(limits = c(0, 0.032), breaks = seq(0, 0.032, by = 0.008)) +
-  theme_bw()
+  scale_y_continuous(limits = c(0, 0.032), breaks = seq(0, 0.032, by = 0.004)) +
+  scale_color_manual(name = NULL,
+                     values = c("prior" = "hotpink", "post" = "darkred"), 
+                     labels = c("post", "prior")) + 
+  theme_minimal() +
+  theme(legend.position = "bottom",
+        plot.title = element_text(hjust = 0.5),
+        panel.grid.major = element_blank())
 
 # Property
 property_fig <- ggplot(crime_data2[crime_data2$crime == 2, ], aes(x = age)) +
-  geom_line(aes(y = arrest_rate_base), stat = "identity", color = "deepskyblue", alpha = 1) +
-  geom_line(aes(y = arrest_rate_new), stat = "identity", color = "blue", alpha = 1) +
+  geom_line(aes(y = arrest_rate_base, color = "prior"), stat = "identity", alpha = 1) +
+  geom_line(aes(y = arrest_rate_new, color = "post",), stat = "identity", alpha = 1) +
   labs(x = "Age", y = "Estimated Arrest Rates", title = "Property") +
   scale_x_continuous(breaks = seq(15, 24, by = 1)) +
-  scale_y_continuous(limits = c(0, 0.06), breaks = seq(0, 0.06, by = 0.015)) +
-  theme_bw()
+  scale_y_continuous(limits = c(0, 0.06), breaks = seq(0, 0.06, by = 0.0075)) +
+  scale_color_manual(name = NULL,
+                     values = c("prior" = "deepskyblue", "post" = "blue"), 
+                     labels = c("post", "prior")) + 
+  theme_minimal() +
+  theme(legend.position = "bottom",
+        plot.title = element_text(hjust = 0.5),
+        panel.grid.major = element_blank())
 
 # Drugs
 drugs_fig <- ggplot(crime_data2[crime_data2$crime == 3, ], aes(x = age)) +
-  geom_line(aes(y = arrest_rate_base), stat = "identity", color = "gray45", alpha = 1) +
-  geom_line(aes(y = arrest_rate_new), stat = "identity", color = "black", alpha = 1) +
+  geom_line(aes(y = arrest_rate_base, color = "prior"), stat = "identity", alpha = 1) +
+  geom_line(aes(y = arrest_rate_new, color = "post",), stat = "identity", alpha = 1) +
   labs(x = "Age", y = "Estimated Arrest Rates", title = "Drugs") +
   scale_x_continuous(breaks = seq(15, 24, by = 1)) +
   scale_y_continuous(limits = c(0, 0.036), breaks = seq(0, 0.036, by = 0.009)) +
-  theme_bw()
+  scale_color_manual(name = NULL,
+                     values = c("prior" = "gray45", "post" = "black"), 
+                     labels = c("post", "prior")) + 
+  theme_minimal() +
+  theme(legend.position = "bottom",
+        plot.title = element_text(hjust = 0.5),
+        panel.grid.major = element_blank())
 
-total_n_violent <- grid.arrange(total_fig, violent_fig, ncol = 2)
-property_n_drugs <- grid.arrange(property_fig, drugs_fig, ncol = 2)
+# Arrange plots using patchwork
+figure3 <- total_fig + violent_fig +
+  plot_layout(ncol = 2) +
+  property_fig + drugs_fig
 
-# Arrange top and bottom rows
-figure3 <- grid.arrange(total_n_violent, property_n_drugs, nrow = 2)
-
-
-
-
-
+# Print the combined plot
+print(figure3)
