@@ -123,7 +123,6 @@ data_map_2010 <- ggplot() +
 
 # Show the combined plot
 figure2 <- grid.arrange(data_map_1980, data_map_2010, ncol = 1)
-invisible(print(figure2))
 
 #### Figure 6 Replication ####
 
