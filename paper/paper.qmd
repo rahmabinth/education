@@ -21,6 +21,7 @@ library(haven)
 library(ggplot2)
 library(dplyr)
 library(sf)
+library(gridExtra)
 ```
 
 ```{r}
@@ -30,8 +31,12 @@ library(sf)
 
 # Loading the data
 figure1_data <- read_csv(here::here("data/raw_data/reproduction_data/figure1_data.csv"))
+maps_d <- read_csv(here::here("data/raw_data/reproduction_data/maps_d.csv")) 
+maps_d_clean <- read_csv(here::here("data/analysis_data/maps_d_clean.csv"))
+dropout_age <- read_csv(here::here("data/raw_data/reproduction_data/dropout_age.csv"))
 
 ```
+
 # Introduction
 
 This reproduction was performed after a replication on the Social Science Reproduction platform: <https://doi.org/10.48152/ssrp-2jxv-qj51>
@@ -47,9 +52,9 @@ Data for this analysis and the different applications used, will be introduced i
 # Data {#sec-data}
 
 ## Sources
-This paper replicates and explores various aspects of the original study for this analysis. It is reproduced using several datasets from the replication package provided by Bell, Costa, and Machin from their paper “Why Does Education Reduce Crime?” [@education]. The replication package only holds the cleaned data in multiple files, depending on how they appear on the paper. Figures 1, 2, and 3 are replicated from the original paper for this reproduction. Our reproduction aims to address the following two questions: (1) Do CSL reforms deter individuals from criminal activity, and thus decreasing crime rate in youth? (2) Does this reduction reshape criminal behaviour distributions by age?
+This paper replicates and explores various aspects of the original study for this analysis. It is reproduced using several data sets from the replication package provided with the paper “Why Does Education Reduce Crime?” [@education]. The replication package only holds the cleaned data in multiple files, depending on how they appear on the paper. Figures 1, 2, and 3 are replicated from the original paper for this reproduction. Our reproduction aims to address the following two questions: (1) Do CSL reforms deter individuals from criminal activity, and thus decreasing crime rate in youth? (2) Does this reduction reshape criminal behaviour distributions by age?
 
-Bell et al. do not analyse a single dataset. Instead, we have many different sources provided to us. The ones used to reproduce and compile this paper are as follows:
+@education do not analyse a single dataset. Instead, we have many different sources provided to us. The ones used to reproduce and compile this paper are as follows:
 
 - Federal Bureau of Investigation Uniform Crime Data [@fbi_ucr]
 - Westlaw International Database [@westlaw]
@@ -91,11 +96,10 @@ We downloaded, cleaned, and wrote csv files to make it R friendly. We have class
 
 In this paper, we have replicated the results found by the authors [@education] to convey the following important findings. CSL reforms causes reductions in criminal activity and reshape criminal behaviour distributions by age. 
 
-The authors categorised the arrest data from the FBI into three categories. As mentioned earlier in [@sec-data], these categories are violent, property, and drug related crimes. The FBI’s UCR program consists of data from more than 18 000 city, university, college, country, state, tribal, and federal law enforcement agencies. [@fbi_ucr]. According to the UCR program, the categories we mentioned are the crimes most committed by young adults [@fbi_ucr]. They are also the crimes that are most consistently reported by law enforcement agencies [@education]. We have found that criminal justice agencies, law enforcement and social service providers often analyse these crimes, likely due to their volume and data availability.
-
 ```{r}
 #| echo: false
-#| label: fig1
+#| label: fig-arrests
+#| warning: false
 #| fig-cap: US male arrest rates between the ages 15-24 from FBI Uniform Crime Reporting data
 
 # Calculate cumulative_arrest for the male arrests per 1000 population
@@ -122,16 +126,105 @@ ggplot(figure1_data, aes(x = as.factor(agegroup), y = cumulative_arrest,
   theme_minimal() +
   theme(legend.position = "bottom", #legend position
         axis.text.x = element_text(angle = 0, hjust = 0.5), #Centers axis
-        plot.title = element_text(hjust = 0.5), #Centers title
+        plot.title = element_text(size = 12, hjust = 0.5), #Centers title
         panel.grid.major = element_blank(),  #Removes major grid lines
         panel.grid.minor = element_blank())  #Removes minor grid lines
 
 ```
 
-In analyzing @fig1, we can see a jump in male arrests for ages 15 to 18. The arrests peak at 18 and then fall gradually thereafter. These are the ages individuals are typically meant to be in high school. Within this figure, we can see how arrest rates vary across different age groups. An analysis can tell us the consistency across age cohorts. The types of crime driving the trend, is of particular interest to us. We observed there is an increase in drug-related crimes for individuals in this age range and is more pronounced that the other two types of crimes. It prompts further investigation and we provide some insight to this in [@sec-results].
+The authors categorised the arrest data from the FBI into three categories. As mentioned earlier in [@sec-data], these categories are violent, property, and drug related crimes. The FBI’s UCR program consists of data from more than 18 000 city, university, college, country, state, tribal, and federal law enforcement agencies. [@fbi_ucr]. According to the UCR program, the categories we mentioned are the crimes most committed by young adults [@fbi_ucr]. They are also the crimes that are most consistently reported by law enforcement agencies [@education]. We have found that criminal justice agencies, law enforcement and social service providers often analyse these crimes, likely due to their volume and data availability.
+
+In analyzing @fig-arrests, we can see a jump in male arrests for ages 15 to 18. The arrests peak at 18 and then fall gradually thereafter. These are the ages individuals are typically meant to be in high school. Within this figure, we can see how arrest rates vary across different age groups. An analysis can tell us the consistency across age cohorts. The types of crime driving the trend, is of particular interest to us. We observed there is an increase in drug-related crimes for individuals in this age range and is more pronounced that the other two types of crimes. It prompts further investigation and we provide some insight to this in [@sec-results].
 
 Note that we examined county level data rather than state level data. This is due to the fact that counties rarely report their data even in a 5 year window. Thus, we focused on one that reported their data and use it to talk about state wide reforms [@education].
 
+```{r}
+#| echo: false
+#| label: fig-dropout
+#| warning: false
+#| message: false
+#| fig-cap: Change in dropout ages designated by state law between 1980 and 2010
+
+#Rename coloumn for dropout_age
+names(dropout_age)[names(dropout_age) == "STATEFP"] <- "bpl"
+
+# Load US state boundary data
+us_states <- map_data("state")
+
+#Covert to spatial data frama
+maps_d_sf <- st_as_sf(maps_d_clean, coords = c("x_c", "y_c"))
+
+# Filter dropout_age for 1980 and 2010
+dropout_age_1980 <- filter(dropout_age, year == 1980)
+dropout_age_2010 <- filter(dropout_age, year == 2010)
+
+# Join the datasets mapd_d_sf and dropout_age_1980, as well as dropout_age_2010
+maps_d_sf_1980 <- left_join(maps_d_sf, dropout_age_1980, by = c("bpl"))
+maps_d_sf_2010 <- left_join(maps_d_sf, dropout_age_2010, by = c("bpl"))
+
+#Convert the coloumn values to contain all lowercase values to match with 
+# a us_states column
+maps_d_sf_1980$NAME <- tolower(maps_d_sf_1980$NAME)
+us_states_1980 <- left_join(us_states, maps_d_sf_1980, 
+                            by =  c("region" = "NAME"))
+
+maps_d_sf_2010$NAME <- tolower(maps_d_sf_2010$NAME)
+us_states_2010 <- left_join(us_states, maps_d_sf_2010, 
+                            by =  c("region" = "NAME"))
+
+# Plots the map boundary
+base_map <- ggplot() +
+  geom_polygon(data = us_states_1980, aes(x = long, y = lat, group = group), 
+               fill ="white", color = "grey") +
+  coord_map() +
+  theme_minimal() +
+  labs(x = "Longitude", y = "Latitude") +
+  ggtitle("Map of US States")
+
+#Set the colours for the different ages
+colours <- c("14" = "aquamarine2", "15" = "seagreen", "16" = "aquamarine3", 
+             "17" = "aquamarine4", "18" = "chartreuse4", "NA" = "white")
+
+# Plot dropout age data within state boundaries
+data_map_1980 <- ggplot() +
+  geom_sf(data = maps_d_sf_1980, aes(fill = as.factor(dropage)), size = 2) +
+  geom_polygon(data = us_states_1980, aes(x = long, y = lat, group = group, 
+                                          fill = as.factor(dropage)), 
+               color = "grey") +
+  theme_void() +
+  scale_fill_manual(values = colours, 
+                    guide = "legend", name = "Dropout Age  ",
+                    na.value = "white") +
+  labs(title = "Dropout Age by State (1980)") +
+  theme(plot.title = element_text(size = 10, hjust = 0.4),
+        legend.title = element_text(size = 10)) +
+  coord_sf(xlim = c(-130, -60), ylim = c(25, 50))
+
+# Plot dropout age data within state boundaries
+data_map_2010 <- ggplot() +
+  geom_sf(data = maps_d_sf_2010, aes(fill = as.factor(dropage)), size = 2) +
+  geom_polygon(data = us_states_2010, aes(x = long, y = lat, group = group, 
+                                          fill = as.factor(dropage)), 
+               color = "grey") +
+  theme_void() +
+  scale_fill_manual(values = colours, 
+                    guide = "legend", name = "Dropout Age  ",
+                    na.value = "white") +
+  labs(title = "Dropout Age by State (2010)") +
+  theme(plot.title = element_text(size = 10, hjust = 0.4),
+        legend.title = element_text(size = 10)) +
+  coord_sf(xlim = c(-130, -60), ylim = c(25, 50))
+
+# Show the combined plot
+figure2 <- grid.arrange(data_map_1980, data_map_2010, ncol = 1)
+
+```
+
+In terms of CSL reforms, @fig-dropout illustrates the age individuals are required to be in school until they can dropout. This dropout age is shown for each state, starting at 14 until 18. Initially, in 1980, there was significant variability among states for the dropout age. 16% of states set the age under 16, 54% of the states set the age at 16 and 26% at ages 17-18. However, by 2010, we saw a notable shift in the mandatory dropout ages. Only one state, Montana, had the dropout age under 16 and 62% of states set the age to be 18. As you can see, there was a significant increase in educational interventions, in the form of CSL reforms, between the years 1980 and 2010. This reflects a broader societal emphasis on the importance of education and its impact on various social outcomes such as crime rates. 
+
+
+
+# Discussion {#sec-discussion}
 
 \newpage
 
