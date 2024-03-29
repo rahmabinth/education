@@ -12,6 +12,7 @@ library(haven)
 library(ggplot2)
 library(dplyr)
 library(sf)
+library(gridExtra)
 
 #### Figure 1 Replication ####
 
@@ -98,8 +99,6 @@ data_map_1980 <- ggplot() +
   geom_polygon(data = us_states_1980, aes(x = long, y = lat, group = group, 
                                           fill = as.factor(dropage)), 
                color = "grey") +
-  geom_text(data = maps_d, aes(x = x_c, y = y_c, label = NAME), size = 3, 
-            color = "white", check_overlap = TRUE) +
   theme_void() +
   theme(plot.title = element_text(hjust = 0.4)) + 
   scale_fill_manual(values = colours, 
@@ -108,17 +107,12 @@ data_map_1980 <- ggplot() +
   labs(title = "Dropout Age by State (1980)") +
   coord_sf(xlim = c(-130, -60), ylim = c(25, 50))
 
-# Show the combined plot
-data_map_1980
-
 # Plot dropout age data within state boundaries
 data_map_2010 <- ggplot() +
   geom_sf(data = maps_d_sf_2010, aes(fill = as.factor(dropage)), size = 2) +
   geom_polygon(data = us_states_2010, aes(x = long, y = lat, group = group, 
                                           fill = as.factor(dropage)), 
                color = "grey") +
-  geom_text(data = maps_d, aes(x = x_c, y = y_c, label = NAME), size = 3, 
-            color = "white", check_overlap = TRUE) +
   theme_void() +
   theme(plot.title = element_text(hjust = 0.4)) + 
   scale_fill_manual(values = colours, 
@@ -128,7 +122,8 @@ data_map_2010 <- ggplot() +
   coord_sf(xlim = c(-130, -60), ylim = c(25, 50))
 
 # Show the combined plot
-data_map_2010
+figure2 <- grid.arrange(data_map_1980, data_map_2010, ncol = 1)
+invisible(print(figure2))
 
 #### Figure 6 Replication ####
 
@@ -141,7 +136,7 @@ crime_data2$arrest_rate_new <- exp(crime_data2$base_age + crime_data2$b_age)
 
 # Plotting
 # Total
-ggplot(crime_data2[crime_data2$crime == 4, ], aes(x = age)) +
+total_fig <- ggplot(crime_data2[crime_data2$crime == 4, ], aes(x = age)) +
   geom_line(aes(y = arrest_rate_base), stat = "identity", color = "aquamarine2", alpha = 1) +
   geom_line(aes(y = arrest_rate_new), stat = "identity", color = "chartreuse4", alpha = 1) +
   labs(x = "Age", y = "Estimated Arrest Rates", title = "Total") +
@@ -150,7 +145,7 @@ ggplot(crime_data2[crime_data2$crime == 4, ], aes(x = age)) +
   theme_bw()
 
 # Violent
-ggplot(crime_data2[crime_data2$crime == 1, ], aes(x = age)) +
+violent_fig <- ggplot(crime_data2[crime_data2$crime == 1, ], aes(x = age)) +
   geom_line(aes(y = arrest_rate_base), stat = "identity", color = "hotpink", alpha = 1) +
   geom_line(aes(y = arrest_rate_new), stat = "identity", color = "darkred", alpha = 1) +
   labs(x = "Age", y = "Estimated Arrest Rates", title = "Violent") +
@@ -159,7 +154,7 @@ ggplot(crime_data2[crime_data2$crime == 1, ], aes(x = age)) +
   theme_bw()
 
 # Property
-ggplot(crime_data2[crime_data2$crime == 2, ], aes(x = age)) +
+property_fig <- ggplot(crime_data2[crime_data2$crime == 2, ], aes(x = age)) +
   geom_line(aes(y = arrest_rate_base), stat = "identity", color = "deepskyblue", alpha = 1) +
   geom_line(aes(y = arrest_rate_new), stat = "identity", color = "blue", alpha = 1) +
   labs(x = "Age", y = "Estimated Arrest Rates", title = "Property") +
@@ -168,12 +163,21 @@ ggplot(crime_data2[crime_data2$crime == 2, ], aes(x = age)) +
   theme_bw()
 
 # Drugs
-ggplot(crime_data2[crime_data2$crime == 3, ], aes(x = age)) +
+drugs_fig <- ggplot(crime_data2[crime_data2$crime == 3, ], aes(x = age)) +
   geom_line(aes(y = arrest_rate_base), stat = "identity", color = "gray45", alpha = 1) +
   geom_line(aes(y = arrest_rate_new), stat = "identity", color = "black", alpha = 1) +
   labs(x = "Age", y = "Estimated Arrest Rates", title = "Drugs") +
   scale_x_continuous(breaks = seq(15, 24, by = 1)) +
   scale_y_continuous(limits = c(0, 0.036), breaks = seq(0, 0.036, by = 0.009)) +
   theme_bw()
+
+total_n_violent <- grid.arrange(total_fig, violent_fig, ncol = 2)
+property_n_drugs <- grid.arrange(property_fig, drugs_fig, ncol = 2)
+
+# Arrange top and bottom rows
+figure3 <- grid.arrange(total_n_violent, property_n_drugs, nrow = 2)
+
+
+
 
 
