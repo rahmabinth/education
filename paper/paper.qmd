@@ -22,6 +22,8 @@ library(ggplot2)
 library(dplyr)
 library(sf)
 library(gridExtra)
+library(patchwork)
+
 ```
 
 ```{r}
@@ -34,6 +36,8 @@ figure1_data <- read_csv(here::here("data/raw_data/reproduction_data/figure1_dat
 maps_d <- read_csv(here::here("data/raw_data/reproduction_data/maps_d.csv")) 
 maps_d_clean <- read_csv(here::here("data/analysis_data/maps_d_clean.csv"))
 dropout_age <- read_csv(here::here("data/raw_data/reproduction_data/dropout_age.csv"))
+
+figure3_data <- read_csv(here::here("data/raw_data/reproduction_data/figure3_data.csv"))
 
 ```
 
@@ -90,7 +94,7 @@ In general, these data sets provide us with a way to graph the arrest rates agai
 ## Methodology
 The language and environment used for this analysis is `R` [@citeR], alongside the `tidyverse` [@tidyverse], `dplyr` [@dplyr], `haven` [@haven], `ggplot2` [@ggplot2], and `sf` [@sf] packages. 
 
-We downloaded, cleaned, and wrote csv files to make it R friendly. We have classified it into three categories, arrest data, reform data, and United States shapefiles. There are many more datasets in the package, but we chose to only focus on these three. An explanation of these choices will be given in @sec-results. 
+We downloaded, cleaned, and wrote csv files to make it R friendly. We have classified it into three categories, arrest data, reform data, and United States shapefiles. There are many more datasets in the package, but we chose to only focus on these three. An explanation of these choices will be given in @sec-results.
 
 # Results {#sec-results}
 
@@ -222,6 +226,101 @@ figure2 <- grid.arrange(data_map_1980, data_map_2010, ncol = 1)
 
 In terms of CSL reforms, @fig-dropout illustrates the age individuals are required to be in school until they can dropout. This dropout age is shown for each state, starting at 14 until 18. Initially, in 1980, there was significant variability among states for the dropout age. 16% of states set the age under 16, 54% of the states set the age at 16 and 26% at ages 17-18. However, by 2010, we saw a notable shift in the mandatory dropout ages. Only one state, Montana, had the dropout age under 16 and 62% of states set the age to be 18. As you can see, there was a significant increase in educational interventions, in the form of CSL reforms, between the years 1980 and 2010. This reflects a broader societal emphasis on the importance of education and its impact on various social outcomes such as crime rates. 
 
+```{r}
+#| echo: false
+#| label: fig-rates
+#| warning: false
+#| fig-cap: Prior and post reform crime rates for ages 15-24
+
+# Calculate arrest rates
+figure3_data$arrest_rate_base <- exp(figure3_data$base_age)
+figure3_data$arrest_rate_new <- exp(figure3_data$base_age + figure3_data$b_age)
+
+# Plotting
+# Total
+total_fig <- ggplot(figure3_data[figure3_data$crime == 4, ], aes(x = age)) +
+  geom_line(aes(y = arrest_rate_base, color = "prior"), stat = "identity", alpha = 1) +
+  geom_line(aes(y = arrest_rate_new, color = "post",), stat = "identity", alpha = 1) +
+  labs(x = "Age", y = "Estimated Arrest Rates", title = "Total") +
+  scale_x_continuous(breaks = seq(15, 24, by = 1)) +
+  scale_y_continuous(limits = c(0.04, 0.12), breaks = seq(0.04, 0.12, by = 0.02)) +
+  scale_color_manual(name = NULL,
+                    values = c("prior" = "aquamarine2", "post" = "chartreuse4"), 
+                    labels = c("post", "prior")) + 
+  theme_minimal() +
+  theme(legend.position = "right",
+        plot.title = element_text(size = 11, hjust = 0.5),
+        axis.text.x = element_text(angle = 45, size = 6.5),
+        axis.text.y = element_text(angle = 45, size = 7),
+        axis.title.x = element_text(size = 8),
+        axis.title.y = element_text(size = 8),
+        panel.grid.major = element_blank())
+
+# Violent
+violent_fig <- ggplot(figure3_data[figure3_data$crime == 1, ], aes(x = age)) +
+  geom_line(aes(y = arrest_rate_base, color = "prior"), stat = "identity", alpha = 1) +
+  geom_line(aes(y = arrest_rate_new, color = "post",), stat = "identity", alpha = 1) +
+  labs(x = "Age", y = "Estimated Arrest Rates", title = "Violent") +
+  scale_x_continuous(breaks = seq(15, 24, by = 1)) +
+  scale_y_continuous(limits = c(0, 0.032), breaks = seq(0, 0.032, by = 0.008)) +
+  scale_color_manual(name = NULL,
+                     values = c("prior" = "hotpink", "post" = "darkred"), 
+                     labels = c("post", "prior")) + 
+  theme_minimal() +
+  theme(legend.position = "right",
+        plot.title = element_text(size = 11, hjust = 0.5),
+        axis.text.x = element_text(angle = 45, size = 6.5),
+        axis.text.y = element_text(angle = 45, size = 7),
+        axis.title.x = element_text(size = 8),
+        axis.title.y = element_text(size = 8),
+        panel.grid.major = element_blank())
+
+# Property
+property_fig <- ggplot(figure3_data[figure3_data$crime == 2, ], aes(x = age)) +
+  geom_line(aes(y = arrest_rate_base, color = "prior"), stat = "identity", alpha = 1) +
+  geom_line(aes(y = arrest_rate_new, color = "post",), stat = "identity", alpha = 1) +
+  labs(x = "Age", y = "Estimated Arrest Rates", title = "Property") +
+  scale_x_continuous(breaks = seq(15, 24, by = 1)) +
+  scale_y_continuous(limits = c(0, 0.06), breaks = seq(0, 0.06, by = 0.015)) +
+  scale_color_manual(name = NULL,
+                     values = c("prior" = "deepskyblue", "post" = "blue"), 
+                     labels = c("post", "prior")) + 
+  theme_minimal() +
+  theme(legend.position = "right",
+        plot.title = element_text(size = 11, hjust = 0.5),
+        axis.text.x = element_text(angle = 45, size = 6.5),
+        axis.text.y = element_text(angle = 45, size = 7),
+        axis.title.x = element_text(size = 8),
+        axis.title.y = element_text(size = 8),
+        panel.grid.major = element_blank())
+
+# Drugs
+drugs_fig <- ggplot(figure3_data[figure3_data$crime == 3, ], aes(x = age)) +
+  geom_line(aes(y = arrest_rate_base, color = "prior"), stat = "identity", alpha = 1) +
+  geom_line(aes(y = arrest_rate_new, color = "post",), stat = "identity", alpha = 1) +
+  labs(x = "Age", y = "Estimated Arrest Rates", title = "Drugs") +
+  scale_x_continuous(breaks = seq(15, 24, by = 1)) +
+  scale_y_continuous(limits = c(0, 0.036), breaks = seq(0, 0.036, by = 0.009)) +
+  scale_color_manual(name = NULL,
+                     values = c("prior" = "gray45", "post" = "black"), 
+                     labels = c("post", "prior")) + 
+  theme_minimal() +
+  theme(legend.position = "right",
+        plot.title = element_text(size = 11, hjust = 0.5),
+        axis.text.x = element_text(angle = 45, size = 6.5),
+        axis.text.y = element_text(angle = 45, size = 7),
+        axis.title.x = element_text(size = 8),
+        axis.title.y = element_text(size = 8),
+        panel.grid.major = element_blank())
+
+# Arrange plots using patchwork
+figure3 <- total_fig + violent_fig +
+  plot_layout(ncol = 2) +
+  property_fig + drugs_fig
+
+# Print the combined plot
+print(figure3)
+```
 
 
 # Discussion {#sec-discussion}
