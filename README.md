@@ -15,7 +15,7 @@ The repo is structured as:
 
 -   `data/raw_data` contains the raw data as obtained from the reproduction package provided by the original authors.
 -   `data/analysis_data` contains the cleaned dataset that was constructed.
--   `other` contains relevant literature, details about LLM chat interactions, and sketches.
+-   `other` contains details about LLM chat interactions and sketches.
 -   `paper` contains the files used to generate the paper, including the Quarto document and reference bibliography file, as well as the PDF of the paper. 
 -   `scripts` contains the R scripts used to install packages, simulate, download, clean, and test the data, as well as the code for the replication of figures. 
 
