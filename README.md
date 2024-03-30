@@ -2,23 +2,23 @@
 
 ## Overview
 
-This repo provides students with a foundation for their own projects associated with *Telling Stories with Data*. You do not need every aspect for every paper and you should delete aspects that you do not need.
+This repository consists of a reproduction of the paper, "Why Does Education Reduce Crime" by Brian Bell, Rui Costa and Stephen Machin.
 
-To use this folder, click the green "Code" button", then "Download ZIP". Move the downloaded folder to where you want to work on your own computer, and then modify it to suit.
+## Data
 
+This repository consists of only the raw data that we used for the our reproduction. The complete raw data, full text of the paper, appendix and reproduction package can be found at this website, https://www.journals.uchicago.edu/doi/full/10.1086/717895#_i38.
+To access the complete paper, you will need to log in through your institution, purchase a subscription, or purchase the article alone. 
 
 ## File Structure
 
 The repo is structured as:
 
--   `data/raw_data` contains the raw data as obtained from X.
+-   `data/raw_data` contains the raw data as obtained from the reproduction package provided by the original authors.
 -   `data/analysis_data` contains the cleaned dataset that was constructed.
--   `model` contains fitted models. 
 -   `other` contains relevant literature, details about LLM chat interactions, and sketches.
 -   `paper` contains the files used to generate the paper, including the Quarto document and reference bibliography file, as well as the PDF of the paper. 
--   `scripts` contains the R scripts used to simulate, download and clean data.
-
+-   `scripts` contains the R scripts used to install packages, simulate, download, clean, and test the data, as well as the code for the replication of figures. 
 
 ## Statement on LLM usage
 
-Aspects of the code were written with the help of the auto-complete tool, Codriver. The abstract and introduction were written with the help of ChatHorse and the entire chat history is available in inputs/llms/usage.txt.
+ChatGPT 3.5 was used to understand how to display multiple figures in a panel view, to show as one figure. It was also used to make the abstract short and concise. The entire chat history is available in other/llms/usage.txt.
