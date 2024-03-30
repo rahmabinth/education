@@ -1,4 +1,4 @@
-# Starter folder
+# Education Serves as a Deterrent to Criminal Behaviour
 
 ## Overview
 
@@ -7,7 +7,7 @@ This repository consists of a reproduction of the paper, "Why Does Education Red
 ## Data
 
 This repository consists of only the raw data that we used for the our reproduction. The complete raw data, full text of the paper, appendix and reproduction package can be found at this website, https://www.journals.uchicago.edu/doi/full/10.1086/717895#_i38.
-To access the complete paper, you will need to log in through your institution, purchase a subscription, or purchase the article alone. 
+To access the complete paper, you will need to log in through a recognized institution, purchase a subscription, or purchase the article alone. 
 
 ## File Structure
 
