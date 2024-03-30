@@ -7,6 +7,7 @@ date-format: long
 abstract: "This paper explores the impact of Compulsory School Leaving (CSL) reforms on criminal behaviour, focusing on their role in reducing crime rates, particularly among the youth demographic. Drawing upon empirical evidence, it investigates how CSL reforms incentivize educational attainment, thereby diminishing the allure of criminal activities. The study underscores the significance of education in deterring individuals from a life of crime and advocates for continued research to inform effective policy interventions."
 format: pdf
 number-sections: true
+toc: true
 bibliography: references.bib
 ---
 
@@ -60,8 +61,8 @@ This paper replicates and explores various aspects of the original study for thi
 
 @education do not analyse a single dataset. Instead, we have many different sources provided to us. The ones used to reproduce and compile this paper are as follows:
 
-- Federal Bureau of Investigation Uniform Crime Data [@fbi_ucr]
-- Westlaw International Database [@westlaw]
+- Federal Bureau of Investigation Uniform Crime Data
+- Westlaw International Database
 
 ### Arrest Data
 
@@ -89,7 +90,7 @@ The centerpoint of each state according to the longitude and latitude of its loc
 
 The borders for each states according to the longitude and latitude of its location was provided in the dataset, along with the specific state identification number.
 
-In general, these data sets provide us with a way to graph the arrest rates against the age for various crime type, compare the change in dropout ages as time passes, and see arrest rates prior and post to the reforms. We have omitted an in-depth examination of the discontinuity estimates for conciseness.
+In general, these datasets provide us with a way to graph the arrest rates against the age for various crime type, compare the change in dropout ages as time passes, and see arrest rates prior and post to the reforms. We have omitted an in-depth examination of the discontinuity estimates for conciseness. Our analysis with this data provide us with information of the real world to help policy makers make decisions on future educational interventions. 
 
 ## Methodology
 The language and environment used for this analysis is `R` [@citeR], alongside the `tidyverse` [@tidyverse], `dplyr` [@dplyr], `haven` [@haven], `ggplot2` [@ggplot2], `sf` [@sf], `gridExtra` [@gridExtra], and `patchwork` [@patchwork] packages. 
@@ -99,6 +100,8 @@ We downloaded, cleaned, and wrote csv files to make it R friendly. We have class
 # Results {#sec-results}
 
 In this paper, we have replicated the results found by the authors [@education] to convey the following important findings. CSL reforms causes reductions in criminal activity and reshape criminal behaviour distributions by age. 
+
+The authors categorised the arrest data from the FBI into three categories. As mentioned earlier in [@sec-data], these categories are violent, property, and drug related crimes. The FBI’s UCR program consists of data from more than 18 000 city, university, college, country, state, tribal, and federal law enforcement agencies. [@fbi_ucr]. According to the UCR program, the categories we mentioned are the crimes most committed by young adults [@fbi_ucr]. They are also the crimes that are most consistently reported by law enforcement agencies [@education]. We have found that criminal justice agencies, law enforcement and social service providers often analyse these crimes, likely due to their volume and data availability.
 
 ```{r}
 #| echo: false
@@ -135,8 +138,6 @@ ggplot(figure1_data, aes(x = as.factor(agegroup), y = cumulative_arrest,
         panel.grid.minor = element_blank())  #Removes minor grid lines
 
 ```
-
-The authors categorised the arrest data from the FBI into three categories. As mentioned earlier in [@sec-data], these categories are violent, property, and drug related crimes. The FBI’s UCR program consists of data from more than 18 000 city, university, college, country, state, tribal, and federal law enforcement agencies. [@fbi_ucr]. According to the UCR program, the categories we mentioned are the crimes most committed by young adults [@fbi_ucr]. They are also the crimes that are most consistently reported by law enforcement agencies [@education]. We have found that criminal justice agencies, law enforcement and social service providers often analyse these crimes, likely due to their volume and data availability.
 
 In analyzing @fig-arrests, we can see a jump in male arrests for ages 15 to 18. The arrests peak at 18 and then fall gradually thereafter. These are the ages individuals are typically meant to be in high school. Within this figure, we can see how arrest rates vary across different age groups. An analysis can tell us the consistency across age cohorts. The types of crime driving the trend, is of particular interest to us. We observed there is an increase in drug-related crimes for individuals in this age range and is more pronounced that the other two types of crimes. It prompts further investigation and we provide some insight to this in [@sec-results].
 
@@ -349,6 +350,4 @@ In summary, the observed decline in arrest rates following the implementation of
 \newpage
 
 
-# References
-
-
+# References {#sec-refereces}
